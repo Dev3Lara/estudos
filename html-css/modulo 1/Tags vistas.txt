@@ -1,0 +1,125 @@
+# ✅ **Tags mais usadas e SEMÂNTICAS do HTML5**
+
+*(as que realmente fazem diferença em código profissional)*
+
+## **1. Estrutura da Página**
+
+* `<html>` — raiz do documento
+* `<head>` — metadados
+* `<body>` — conteúdo visível
+* `<header>` — cabeçalho (logo, menu, título)
+* `<nav>` — navegação (menus, links principais)
+* `<main>` — conteúdo principal da página
+* `<section>` — sessões temáticas
+* `<article>` — conteúdo independente (post, notícia, card)
+* `<aside>` — conteúdo lateral, complementar
+* `<footer>` — rodapé
+
+---
+
+## **2. Texto e Semântica**
+
+* `<h1>` a `<h6>` — títulos
+* `<p>` — parágrafo
+* `<strong>` — destaque **forte** (semântico)
+* `<em>` — ênfase *semântica*
+* `<mark>` — destacar texto relevante
+* `<small>` — textos secundários
+* `<cite>` — citações de obras
+* `<blockquote>` — citação longa
+* `<q>` — citação curta (inline)
+* `<time>` — datas/horários semânticos
+* `<abbr>` — abreviação com significado
+* `<code>` — código-fonte
+* `<pre>` — texto pré-formatado
+* `<address>` — informações de contato
+
+---
+
+## **3. Listas**
+
+* `<ul>` — lista não-ordenada
+* `<ol>` — lista ordenada
+* `<li>` — item de lista
+* `<dl>` — lista de definições
+* `<dt>` — termo
+* `<dd>` — descrição
+
+---
+
+## **4. Mídia**
+
+* `<img>` — imagem
+* `<figure>` — imagem + legenda
+* `<figcaption>` — legenda da figura
+* `<audio>` — áudio
+* `<video>` — vídeo
+* `<source>` — fontes alternativas
+* `<track>` — legendas (vídeo/áudio)
+* `<canvas>` — gráficos dinâmicos
+* `<svg>` — vetores
+
+---
+
+## **5. Tabelas (semânticas e acessíveis)**
+
+* `<table>` — tabela
+* `<caption>` — título da tabela
+* `<thead>` — cabeçalho
+* `<tbody>` — corpo
+* `<tfoot>` — rodapé
+* `<tr>` — linha
+* `<th>` — célula de cabeçalho
+* `<td>` — célula normal
+
+---
+
+## **6. Formulários**
+
+* `<form>` — formulário
+* `<label>` — rótulo de campo
+* `<input>` — entrada de texto, número, email etc.
+* `<textarea>` — área de texto
+* `<button>` — botão
+* `<select>` — lista dropdown
+* `<option>` — item da lista
+* `<fieldset>` — agrupar campos
+* `<legend>` — legenda do grupo
+* `<datalist>` — lista de sugestões
+* `<output>` — resultado de cálculo
+* `<progress>` — barra de progresso
+* `<meter>` — valor medido (ex.: nível de bateria)
+
+---
+
+## **7. Tags Específicas e Modernas**
+
+* `<details>` — conteúdo expansível
+* `<summary>` — título clicável do details
+* `<dialog>` — modais e caixas de diálogo
+* `<template>` — HTML invisível para JS
+* `<slot>` — usado em Web Components
+
+---
+
+## **8. Layout e Organização**
+
+* `<div>` — bloco genérico (quando não existe tag semântica apropriada)
+* `<span>` — elemento inline genérico
+
+*Obs: não semânticos, mas ainda necessários quando usados com propósito claro.*
+
+---
+
+# ✅ **Resumo das tags semânticas mais profissionais (as TOP para devs)**
+
+**Use SEMPRE que possível:**
+`header`, `nav`, `main`, `section`, `article`, `aside`, `footer`,
+`strong`, `em`, `figure`, `figcaption`,
+`table` com `thead`/`tbody`/`tfoot`,
+`form`/`label`/`input`,
+`details`/`summary`.
+
+---
+
+Se quiser, posso montar **um template HTML5 completo, moderno e semântico** só com tags boas práticas! Quer?

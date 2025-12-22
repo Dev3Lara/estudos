@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ex001</title>
+    <link rel="shortcut icon" href="../../../../fontes/images/favicon-32x32.png" type="image/x-icon">
+</head>
+<body>
+    <h1>Imagem Dinâmica</h1>
+    <p>Tente abrir esse site em disposisitivos diferentes</p>
+
+    <picture>
+        <source media="(max-width:350px )" srcset="../../../../fontes/images/a250x250.png" type="image/png">
+        <source media="(max-width: 550px)" srcset="../../../../fontes/images/p300x300.png" type="image/png">
+        <source media="(max-width: 750px)" srcset="../../../../fontes/images/m500x500.png" type="image/png">
+        <source media="(max-width: 1050px)" srcset="../../../../fontes/images/m700x700.png" type="image/png">
+        <img src="../../../../fontes/images/g1000x1000.png" alt="G1000.png">
+    </picture>
+    <br>
+    <h1>Reproduzir áudio com loop</h1>
+            <h2>Code:</h2>
+        <code>
+                    metadata:Carregue o play sem baixar a música. Só baixa quando clica<br>
+                    loop:Lopping infinito <br>
+                    controls:Coloca o botão play <br><br>  
+                &lt;audio preload=<B>"metadata" loop controls</B>&gt; <br><br>
+                &lt;source src="../../../../fontes/audios/good.mp3" type="audio/mpeg"&gt; <br>
+                &lt;source src="../../../../fontes/audios/good.ogg" type="audio/ogg"&gt; <br>
+                &lt;source src="../../../../fontes/audios/good.wav" type="audio/wav"&gt; <br>
+                &lt;p&gt;&lt;a href="../../../../fontes/audios/good.mp3" download="áudio/mpeg"&gt; Seu navegador não é compatível com a reprodução online. Baixa o áudio mp3 aqui&lt;/a&gt;&lt;/p&gt; <br><br>
+            &lt;/audio&gt;          
+        </code>
+        <br>
+        <h2>Resultado:</h2>
+    <audio preload="metadata" loop controls>
+            <source src="../../../../fontes/audios/good.mp3" type="audio/mpeg"> 
+            <source src="../../../../fontes/audios/good.ogg" type="audio/ogg"> 
+            <source src="../../../../fontes/audios/good.wav" type="audio/wav"> 
+            <p><a href="../../../../fontes/audios/good.mp3" download="áudio/mpeg"> Seu navegador não é compatível com a reprodução online. Baixa o áudio mp3 aqui</a></p>
+        </audio>
+        <hr>
+        <a href="ex012.html">Ex012</a>
+</body>
+</html>

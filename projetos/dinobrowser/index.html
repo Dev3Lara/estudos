@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Mini Game Satírico</title>
+
+<style>
+body{
+ margin:0;
+ overflow:hidden;
+ font-family:Arial;
+ background:linear-gradient(#87ceeb,#e3f2fd);
+}
+
+#menu,#submenu,#quiz,#gameOver,#bonus{
+ position:fixed;
+ inset:0;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ align-items:center;
+ background:rgba(0,0,0,.85);
+ color:#fff;
+ z-index:100;
+}
+
+#game{width:100vw;height:100vh;position:relative}
+
+.player,.enemy,.topChar{
+ position:absolute;
+ width:70px;
+ height:70px;
+}
+
+.player{left:80px}
+
+.player img,.enemy img,.topChar img{
+ width:100%;
+ height:100%;
+ border-radius:50%;
+}
+
+.topChar{top:10px;z-index:30}
+
+.invincible{
+ box-shadow:0 0 30px gold;
+ animation:glow .4s infinite alternate;
+}
+
+@keyframes glow{
+ from{box-shadow:0 0 10px gold}
+ to{box-shadow:0 0 40px gold}
+}
+
+#score,#timer{
+ position:fixed;
+ top:10px;
+ font-size:20px;
+ font-weight:bold;
+ z-index:20;
+}
+
+#score{left:10px;color:#000}
+#timer{right:10px;color:gold;display:none}
+
+button{
+ padding:12px 26px;
+ font-size:18px;
+ margin:10px;
+ cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div id="menu">
+ <h1>Mini Game Satírico</h1>
+ <button onclick="openSub('play')">▶ Jogar</button>
+ <button onclick="openSub('watch')">🎵 Ouvir música</button>
+</div>
+
+<div id="submenu" style="display:none">
+ <h2 id="subTitle"></h2>
+ <button onclick="startGame('lula')">Lula</button>
+ <button onclick="startGame('bolsonaro')">Bolsonaro</button>
+ <button onclick="backMenu()">⬅ Voltar</button>
+</div>
+
+<div id="game">
+ <div id="score">Pontos: 0</div>
+ <div id="timer">Indulto: 10</div>
+ <div class="player" id="player"></div>
+</div>
+
+<div id="quiz" style="display:none">
+ <h2 id="qText"></h2>
+ <button onclick="responder(true)">Verdadeiro</button>
+ <button onclick="responder(false)">Falso</button>
+</div>
+
+<div id="bonus" style="display:none">
+ <h1>✨ GANHOU INDULTO (10s) ✨</h1>
+</div>
+
+<div id="gameOver" style="display:none">
+ <h1>🚨 VOCÊ FOI PRESO 🚨</h1>
+ <img id="overImg" width="150">
+ <button onclick="location.reload()">Reiniciar</button>
+</div>
+
+<audio id="music" loop></audio>
+
+<script>
+/* ================= CONFIG ================= */
+const BASE_SPEED = 6;
+const GRAVITY = -0.6;
+const FORCE = 10;
+
+/* ================= ESTADO ================= */
+let char="", run=false, fly=false, aiMode=false;
+let y=80, vel=0, score=0;
+let speed=BASE_SPEED;
+let invincible=false, invTime=0;
+let quizIndex=0, esperandoQuiz=false;
+
+let enemies=[], topChars=[];
+
+/* ================= DADOS ================= */
+const cfg={
+ lula:{img:"midias/lula.png",enemy:"midias/moro.png",music:"midias/lula.mp3"},
+ bolsonaro:{img:"midias/bolsonaro.png",enemy:"midias/xandao.png",music:"midias/bolsonaro.mp3"}
+};
+
+const quizzes={
+ lula:[
+  {q:"Lula já foi presidente do Brasil?",a:true},
+  {q:"Lula governou por 8 anos?",a:true},
+  {q:"Lula nunca foi preso?",a:false}
+ ],
+ bolsonaro:[
+  {q:"Bolsonaro foi presidente?",a:true},
+  {q:"Bolsonaro é ex-militar?",a:true},
+  {q:"Bolsonaro nunca foi deputado?",a:false}
+ ]
+};
+
+/* ================= ELEMENTOS ================= */
+const game=document.getElementById("game");
+const player=document.getElementById("player");
+const music=document.getElementById("music");
+const scoreEl=document.getElementById("score");
+const timerEl=document.getElementById("timer");
+const quiz=document.getElementById("quiz");
+const qText=document.getElementById("qText");
+const bonus=document.getElementById("bonus");
+const over=document.getElementById("gameOver");
+const overImg=document.getElementById("overImg");
+
+/* ================= MENU ================= */
+function openSub(mode){
+ aiMode = mode==="watch";
+ menu.style.display="none";
+ submenu.style.display="flex";
+ subTitle.textContent = aiMode ? "IA jogando (invencível)" : "Escolha seu personagem";
+}
+function backMenu(){
+ submenu.style.display="none";
+ menu.style.display="flex";
+}
+
+/* ================= START ================= */
+function resetGame(){
+ enemies.forEach(e=>e.remove());
+ topChars.forEach(t=>t.remove());
+ enemies=[]; topChars=[];
+ score=0; speed=BASE_SPEED;
+ y=80; vel=0;
+ invincible=false; invTime=0;
+ quizIndex=0; esperandoQuiz=false;
+}
+
+function startGame(c){
+ resetGame();
+ char=c;
+ run=true;
+ submenu.style.display="none";
+ player.innerHTML=`<img src="${cfg[c].img}">`;
+ music.src=cfg[c].music;
+ music.volume=0.3;
+ music.play();
+ spawnEnemies();
+ loop();
+}
+
+/* ================= CONTROLES (HUMANO) ================= */
+document.onkeydown=e=>{ if(!aiMode && e.code==="Space") fly=true }
+document.onkeyup=e=>{ if(!aiMode && e.code==="Space") fly=false }
+
+/* ================= ENEMIES ================= */
+function spawnEnemies(){
+ const lanes=[60, innerHeight/2-40];
+ for(let i=0;i<3;i++){
+  const e=document.createElement("div");
+  e.className="enemy";
+  e.innerHTML=`<img src="${cfg[char].enemy}">`;
+  e.x=innerWidth+400+i*500;
+  e.y=lanes[i%2];
+  e.style.bottom=e.y+"px";
+  game.appendChild(e);
+  enemies.push(e);
+ }
+}
+
+/* ================= TOPO ================= */
+function spawnTopo(){
+ const t=document.createElement("div");
+ t.className="topChar";
+ const opositor = char==="lula" ? "bolsonaro" : "lula";
+ t.innerHTML=`<img src="${cfg[opositor].img}">`;
+ t.x=innerWidth+80;
+ t.style.left=t.x+"px";
+ game.appendChild(t);
+ topChars.push(t);
+}
+
+/* ================= IA INTELIGENTE ================= */
+function iaControl(){
+ let perigoTopo = topChars.some(t =>
+  t.x < 220 && t.x > 80
+ );
+
+ let perigoChao = enemies.some(e =>
+  Math.abs(e.x - 80) < 90 && e.y < innerHeight/2
+ );
+
+ // padrão: ficar no topo
+ fly = true;
+
+ // se tiver char contrário no topo → DESCE
+ if(perigoTopo) fly = false;
+
+ // se tiver inimigo embaixo → SOBE
+ if(perigoChao) fly = true;
+}
+
+/* ================= LOOP ================= */
+function loop(){
+ if(!run) return;
+
+ if(aiMode) iaControl();
+
+ if(fly) vel=FORCE;
+ vel+=GRAVITY;
+ y=Math.max(40,Math.min(innerHeight-120,y+vel));
+ player.style.bottom=y+"px";
+
+ enemies.forEach(e=>{
+  e.x-=speed;
+  if(e.x<-120){
+   e.x=innerWidth+600;
+   score++;
+   scoreEl.textContent="Pontos: "+score;
+
+   if(score%10===0 && !esperandoQuiz){
+    speed*=1.2;
+    spawnTopo();
+    chamarQuiz();
+   }
+  }
+  e.style.left=e.x+"px";
+
+  if(!aiMode && !invincible && hit(player,e)) fim();
+ });
+
+ topChars.forEach((t,i)=>{
+  t.x-=speed*1.6;
+  t.style.left=t.x+"px";
+
+  if(!aiMode && !invincible && hitHorizontal90(player,t)) fim();
+
+  if(t.x<-100){
+   t.remove();
+   topChars.splice(i,1);
+  }
+ });
+
+ if(invincible){
+  invTime--;
+  timerEl.textContent="Indulto: "+invTime;
+  if(invTime<=0){
+   invincible=false;
+   timerEl.style.display="none";
+   player.classList.remove("invincible");
+  }
+ }
+
+ requestAnimationFrame(loop);
+}
+
+/* ================= QUIZ ================= */
+function chamarQuiz(){
+ if(quizIndex>=quizzes[char].length) return;
+ esperandoQuiz=true;
+ run=false;
+ qText.textContent=quizzes[char][quizIndex].q;
+ quiz.style.display="flex";
+
+ if(aiMode){
+  setTimeout(()=>{
+   quiz.style.display="none";
+   ativarIndulto();
+   quizIndex++;
+   esperandoQuiz=false;
+   run=true;
+   loop();
+  },800);
+ }
+}
+
+function responder(resp){
+ quiz.style.display="none";
+ if(quizzes[char][quizIndex].a===resp) ativarIndulto();
+ quizIndex++;
+ esperandoQuiz=false;
+ run=true;
+ loop();
+}
+
+/* ================= INDULTO ================= */
+function ativarIndulto(){
+ invincible=true;
+ invTime=10;
+ timerEl.style.display="block";
+ player.classList.add("invincible");
+ bonus.style.display="flex";
+ setTimeout(()=>bonus.style.display="none",1500);
+}
+
+/* ================= COLISÕES ================= */
+function hit(a,b){
+ const r1=a.getBoundingClientRect();
+ const r2=b.getBoundingClientRect();
+ const x=Math.max(0,Math.min(r1.right,r2.right)-Math.max(r1.left,r2.left));
+ const y=Math.max(0,Math.min(r1.bottom,r2.bottom)-Math.max(r1.top,r2.top));
+ return (x*y)>(r1.width*r1.height*0.5);
+}
+
+function hitHorizontal90(a,b){
+ const r1=a.getBoundingClientRect();
+ const r2=b.getBoundingClientRect();
+ const overlap=Math.max(0,Math.min(r1.right,r2.right)-Math.max(r1.left,r2.left));
+ return overlap>=r1.width*0.9;
+}
+
+/* ================= GAME OVER ================= */
+function fim(){
+ run=false;
+ music.pause();
+ overImg.src=cfg[char].enemy;
+ over.style.display="flex";
+}
+</script>
+
+</body>
+</html>

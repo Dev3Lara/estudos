@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../../../../fontes/images/favicon-32x32.png" type="image/x-icon">
+    <title>ex010a</title>
+</head>
+<body>
+    <h1>Trabalho com links externos</h1>
+        <p>Você pode acessar o meu repositório do github  </p>
+        <a href="https://github.com/Dev3Lara?tab=repositories" target="_blank" rel="external"> clicando aqui </a>
+        <p>Veja que o link acima abriu noutra aba, isso porque nele tem a tag &lt;a&gt; que é de link, e dentro dela tem target = "_blank"  rel = "external" (sem espaços)</p>
+        <p>Agora abaixo outro exemplo, que vai abrir na MESMA ABA. Sem target = "_blank" e sem rel = "external"</p> <a href="https://github.com/Dev3Lara?tab=repositories"> Clicando aqui vai abrir na mesma aba</a></p>
+    <h1>Navegando entre páginas</h1>
+    <a href="ex010b.html" rel="next">Clique aqui pra ir à próxima página</a>
+    <p>E (só mecanismo de busca) deve pra usar rel="nofollow" quando você direciona pra um site externo que não recomenda pro mecanismo de busca. Exemplo:</p>
+    <a href="https://www.youtube.com/" rel="nofollow" target="_blank" > youtube.com </a>
+    <br>
+    <p>
+        Pra finalizar, navegar pra outra pg html que está dentro de outra pasta, para voltar uma pasta anterior usamos ../ no endereço do link e para outra pasta, usamos a /, ex.:
+    </p>
+        <a href="zex010/noticias/pg003.html" target="_self" rel="next">noticias/pg003.html </a>
+    <h1>Downloads</h1>
+        <ol type="a" start="1">
+            <li><a href="zex010/livro/Pdf pra exercício de Download em HTML.pdf" download="livro.pdf" type="application/pdf"> Livro.pdf</a></li>
+            <li><a href="zex010/livro/Pdf pra exercício de Download em HTML.rar" download="livro.rar" type="application/rar"> Livro.rar</a></li>
+        </ol>
+        <p>Sempre pesquisar o iana midia type pra download pela extensão</p>
+        <hr>
+        <a href="ex010b.html">Ex010b</a>
+</body>
+</html>
